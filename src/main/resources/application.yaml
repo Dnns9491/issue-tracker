@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/issue_demo
+    username: postgres
+    password: postgres
+
+  jpa:
+    hibernate:
+      ddl-auto: validate     # validate schema against entities; don't auto-create
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+    open-in-view: false       # disables lazy loading outside transactions
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+server:
+  port: 8080
