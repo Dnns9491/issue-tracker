@@ -26,7 +26,7 @@ public class Issue {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
-    private IssuesStatus status = IssuesStatus.OPEN;
+    private IssueStatus status = IssueStatus.OPEN;
 
     @Column(name = "created_at", nullable = false)
     private Instant createdAt = Instant.now();
@@ -66,7 +66,7 @@ public class Issue {
             return description;
         }
 
-        public IssuesStatus getStatus() {
+        public IssueStatus getStatus() {
             return status;
         }
 
@@ -86,7 +86,7 @@ public class Issue {
             this.description = d;
         }
 
-        public void setStatus(IssuesStatus s){
+        public void setStatus(IssueStatus s){
             this.status = s;
         }
 
