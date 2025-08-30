@@ -9,8 +9,10 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.Optional;
 
 
@@ -25,9 +27,10 @@ public class IssueController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public IssueDto create(@Valid @RequestBody CreateIssueRequest req) {
-        return service.create(req);
+    public ResponseEntity<IssueDto> create(@Valid @RequestBody CreateIssueRequest req) {
+        IssueDto dto = service.create(req);
+        URI location = URI.create("/api/issues/" + dto.id());
+        return ResponseEntity.created(location).body(dto);
     }
 
     @GetMapping
@@ -44,12 +47,17 @@ public class IssueController {
                 pageable
         );
     }
+
+    @GetMapping("/{id}")
+    public IssueDto get(@PathVariable Long id) {
+        return service.getById(id);
+    }
     
     @PatchMapping("/{id}")
     public IssueDto update(@PathVariable Long id, @Valid @RequestBody UpdateIssueRequest req) {
         return service.update(id, req);
     }
-    
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {

@@ -103,4 +103,10 @@ public class IssueService {
         private EntityNotFoundException notFound(String type, Object id){
             return new EntityNotFoundException(type + " " + id + " not found");
         }
+        @Transactional(readOnly = true)
+        public IssueDto getById(Long id) {
+        var issue = issues.findById(id)
+                .orElseThrow(() -> notFound("Issue", id));
+            return toDto(issue);
+        }
 }
