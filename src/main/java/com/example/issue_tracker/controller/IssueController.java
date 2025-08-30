@@ -26,6 +26,7 @@ public class IssueController {
         this.service = service;
     }
 
+
     @PostMapping
     public ResponseEntity<IssueDto> create(@Valid @RequestBody CreateIssueRequest req) {
         IssueDto dto = service.create(req);
@@ -63,4 +64,5 @@ public class IssueController {
     public void delete(@PathVariable Long id) {
         service.delete(id);
     }
+
 }

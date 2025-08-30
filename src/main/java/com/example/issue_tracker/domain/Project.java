@@ -10,7 +10,7 @@ public class Project {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "key", nullable = false, unique = true, length = 16)
+    @Column(name = "`key`", nullable = false, unique = true, length = 16)
     private String key;
 
     @Column(name = "name", nullable = false, length = 100)

@@ -109,4 +109,5 @@ public class IssueService {
                 .orElseThrow(() -> notFound("Issue", id));
             return toDto(issue);
         }
+
 }
