@@ -105,9 +105,15 @@ public class IssueService {
         }
         @Transactional(readOnly = true)
         public IssueDto getById(Long id) {
-        var issue = issues.findById(id)
-                .orElseThrow(() -> notFound("Issue", id));
-            return toDto(issue);
+            try {
+                var issue = issues.findById(id)
+                        .orElseThrow(() -> notFound("Issue", id));
+                return toDto(issue);
+            } catch (Exception e) {
+                System.err.println("ERROR getting issue " + id + ": " + e.getMessage());
+                e.printStackTrace();
+                throw e;
+            }
         }
 
 }
