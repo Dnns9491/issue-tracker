@@ -116,4 +116,14 @@ public class IssueService {
             }
         }
 
+        @Transactional
+        public IssueDto assignTo(Long issueId, Long userId) {
+        var issue = issues.findById(issueId)
+                .orElseThrow(() -> notFound("Issue", issueId));
+        var user = users.findById(userId)
+                        .orElseThrow(()-> notFound("User", userId));
+        issue.setAssignee(user);
+        return toDto(issue);
+        }
+
 }
