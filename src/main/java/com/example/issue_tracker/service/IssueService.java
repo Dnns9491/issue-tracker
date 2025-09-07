@@ -116,6 +116,7 @@ public class IssueService {
             }
         }
 
+        //Adding a method to assign an issue to a user
         @Transactional
         public IssueDto assignTo(Long issueId, Long userId) {
         var issue = issues.findById(issueId)
