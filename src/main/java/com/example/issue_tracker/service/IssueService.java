@@ -35,10 +35,8 @@ public class IssueService {
 
     @Transactional
     public IssueDto create(CreateIssueRequest req) {
-        var project = projects.findById(req.projectId())
-                .orElseThrow(() -> notFound("Project", req.projectId()));
-        AppUser assignee = req.assigneeId()==null ? null :
-                users.findById(req.assigneeId()).orElseThrow(() -> notFound("User", req.assigneeId()));
+        var project = projects.findById(req.projectId()).orElseThrow(() -> notFound("Project", req.projectId()));
+        AppUser assignee = req.assigneeId() == null ? null : users.findById(req.assigneeId()).orElseThrow(() -> notFound("User", req.assigneeId()));
 
         var issue = new Issue(project, assignee, req.title(), req.description());
         issue = issues.save(issue);
@@ -46,27 +44,26 @@ public class IssueService {
     }
 
     @Transactional
-    public IssueDto update(Long id, UpdateIssueRequest req){
-        var issue =issues.findById(id).orElseThrow(() -> notFound("Issue", id));
-        if (req.title()!=null)issue.setTitle(req.title());
-        if (req.description()!=null)issue.setDescription(req.description());
-        if (req.status()!=null)issue.setStatus(req.status());
-        if (req.assigneeId()!=null) {
-            var u = users.findById(req.assigneeId())
-                    .orElseThrow(() -> notFound("User", req.assigneeId()));
+    public IssueDto update(Long id, UpdateIssueRequest req) {
+        var issue = issues.findById(id).orElseThrow(() -> notFound("Issue", id));
+        if (req.title() != null) issue.setTitle(req.title());
+        if (req.description() != null) issue.setDescription(req.description());
+        if (req.status() != null) issue.setStatus(req.status());
+        if (req.assigneeId() != null) {
+            var u = users.findById(req.assigneeId()).orElseThrow(() -> notFound("User", req.assigneeId()));
             issue.setAssignee(u);
         }
         return toDto(issue);
     }
 
     @Transactional
-    public void delete(Long id){
+    public void delete(Long id) {
         if (!issues.existsById(id)) throw notFound("Issue", id);
         issues.deleteById(id);
     }
 
     @Transactional(readOnly = true)
-    public Page<IssueDto> search(Optional<IssueStatus> status, Optional<Long> assigneeId, Optional <Long> projectId, Pageable pageable) {
+    public Page<IssueDto> search(Optional<IssueStatus> status, Optional<Long> assigneeId, Optional<Long> projectId, Pageable pageable) {
         Specification<Issue> spec = (root, query, criteriaBuilder) -> null;
         if (status.isPresent()) {
             spec = spec.and((r, q, cb) -> cb.equal(r.get("status"), status.get()));
@@ -81,50 +78,44 @@ public class IssueService {
     }
 
 
-        private IssueDto toDto(Issue i){
-            UserDto assigneeDto = (i.getAssignee() == null) ? null :
-                new UserDto(i.getAssignee().getId(), i.getAssignee().getEmail(), i.getAssignee().getName());
-            ProjectDto projectDto = new ProjectDto(
-                i.getProject().getId(),
-                i.getProject().getKey(),
-                i.getProject().getName(),
-                i.getProject().getCreatedAt());
+    private IssueDto toDto(Issue i) {
+        UserDto assigneeDto = (i.getAssignee() == null) ? null : new UserDto(i.getAssignee().getId(), i.getAssignee().getEmail(), i.getAssignee().getName());
+        ProjectDto projectDto = new ProjectDto(i.getProject().getId(), i.getProject().getKey(), i.getProject().getName(), i.getProject().getCreatedAt());
 
-            return new IssueDto(
-                    i.getId(),
-                    i.getTitle(),
-                    i.getDescription(),
-                    i.getStatus(),
-                    assigneeDto,
-                    projectDto,
-                    i.getCreatedAt(),
-                    i.getUpdatedAt());
-        }
-        private EntityNotFoundException notFound(String type, Object id){
-            return new EntityNotFoundException(type + " " + id + " not found");
-        }
-        @Transactional(readOnly = true)
-        public IssueDto getById(Long id) {
-            try {
-                var issue = issues.findById(id)
-                        .orElseThrow(() -> notFound("Issue", id));
-                return toDto(issue);
-            } catch (Exception e) {
-                System.err.println("ERROR getting issue " + id + ": " + e.getMessage());
-                e.printStackTrace();
-                throw e;
-            }
-        }
+        return new IssueDto(i.getId(), i.getTitle(), i.getDescription(), i.getStatus(), assigneeDto, projectDto, i.getCreatedAt(), i.getUpdatedAt());
+    }
 
-        //Adding a method to assign an issue to a user
-        @Transactional
-        public IssueDto assignTo(Long issueId, Long userId) {
-        var issue = issues.findById(issueId)
-                .orElseThrow(() -> notFound("Issue", issueId));
-        var user = users.findById(userId)
-                        .orElseThrow(()-> notFound("User", userId));
+    private EntityNotFoundException notFound(String type, Object id) {
+        return new EntityNotFoundException(type + " " + id + " not found");
+    }
+
+    @Transactional(readOnly = true)
+    public IssueDto getById(Long id) {
+        try {
+            var issue = issues.findById(id).orElseThrow(() -> notFound("Issue", id));
+            return toDto(issue);
+        } catch (Exception e) {
+            System.err.println("ERROR getting issue " + id + ": " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    //Adding a method to assign an issue to a user
+    @Transactional
+    public IssueDto assignTo(Long issueId, Long userId) {
+        var issue = issues.findById(issueId).orElseThrow(() -> notFound("Issue", issueId));
+        var user = users.findById(userId).orElseThrow(() -> notFound("User", userId));
         issue.setAssignee(user);
         return toDto(issue);
-        }
+    }
+
+    //Adding a method to unassign an issue from a user
+    @Transactional
+    public IssueDto unassign(Long issueId, Long userId) {
+        var issue = issues.findById(issueId).orElseThrow(() -> notFound("Issue", issueId));
+        issue.setAssignee(null);
+        return toDto(issue);
+    }
 
 }
