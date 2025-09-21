@@ -134,4 +134,34 @@ public class IssueService {
         return issues.findAll(spec, pageable).map(this::toDto);
     }
 
+    //Adding a method for quick status update - mark issue open
+    @Transactional
+    public IssueDto markOpen(Long issueId) {
+        var issue = issues.findById(issueId)
+                .orElseThrow(() -> notFound("Issues", issueId));
+        //Change status to IN_PROGRESS
+        issue.setStatus(IssueStatus.OPEN);
+        return toDto(issue);
+    }
+
+    //Adding a method for quick status update - mark issue in progress
+    @Transactional
+    public IssueDto markInProgress(Long issueId) {
+        var issue = issues.findById(issueId)
+                .orElseThrow(() -> notFound("Issues", issueId));
+        //Change status to IN_PROGRESS
+        issue.setStatus(IssueStatus.IN_PROGRESS);
+        return toDto(issue);
+    }
+
+    //Adding a method for quick status update - mark issue as done
+    @Transactional
+    public IssueDto markDone(Long issueId) {
+        var issue = issues.findById(issueId)
+                .orElseThrow(() -> notFound("Issues", issueId));
+        //Change status to IN_PROGRESS
+        issue.setStatus(IssueStatus.DONE);
+        return toDto(issue);
+    }
+
 }
