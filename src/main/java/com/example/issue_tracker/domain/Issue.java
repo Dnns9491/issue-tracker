@@ -4,17 +4,19 @@ import jakarta.persistence.*;
 
 import java.time.Instant;
 
-@Entity @Table(name = "issues")
+@Entity
+@Table(name = "issues")
 public class Issue {
 
-    @Id @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne (optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
     private Project project;
 
-    @ManyToOne (fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assignee_id")
     private AppUser assignee;
 
@@ -34,63 +36,66 @@ public class Issue {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt = Instant.now();
 
-    protected Issue() {}
-        public Issue(Project p, AppUser a, String title, String desc) {
-            this.project = p;
-            this.assignee = a;
-            this.title = title;
-            this.description = desc;
-        }
-
-        @PreUpdate void touch() {
-            updatedAt = Instant.now();
-        }
-
-        public Long getId() {
-            return id;
-        }
-
-        public Project getProject() {
-            return project;
-        }
-
-        public AppUser getAssignee() {
-            return assignee;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public String getDescription() {
-            return description;
-        }
-
-        public IssueStatus getStatus() {
-            return status;
-        }
-
-        public Instant getCreatedAt() {
-            return createdAt;
-        }
-
-        public Instant getUpdatedAt() {
-            return updatedAt;
-        }
-
-        public void setTitle(String t){
-            this.title = t;
-        }
-
-        public void setDescription(String d){
-            this.description = d;
-        }
-
-        public void setStatus(IssueStatus s){
-            this.status = s;
-        }
-
-        public void setAssignee(AppUser u){
-            this.assignee = u;
-        }
+    protected Issue() {
     }
+
+    public Issue(Project p, AppUser a, String title, String desc) {
+        this.project = p;
+        this.assignee = a;
+        this.title = title;
+        this.description = desc;
+    }
+
+    @PreUpdate
+    void touch() {
+        updatedAt = Instant.now();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public AppUser getAssignee() {
+        return assignee;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public IssueStatus getStatus() {
+        return status;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setTitle(String t) {
+        this.title = t;
+    }
+
+    public void setDescription(String d) {
+        this.description = d;
+    }
+
+    public void setStatus(IssueStatus s) {
+        this.status = s;
+    }
+
+    public void setAssignee(AppUser u) {
+        this.assignee = u;
+    }
+}
