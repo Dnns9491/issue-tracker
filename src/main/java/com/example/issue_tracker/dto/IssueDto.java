@@ -4,7 +4,7 @@ import com.example.issue_tracker.domain.IssueStatus;
 
 import java.time.Instant;
 
-public record IssueDto (
+public record IssueDto(
 
         Long id,
         String title,
@@ -14,4 +14,5 @@ public record IssueDto (
         ProjectDto project,
         Instant createdAt,
         Instant updatedAt
-) {}
+) {
+}
