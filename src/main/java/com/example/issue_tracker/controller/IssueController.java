@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -53,7 +54,7 @@ public class IssueController {
     public IssueDto get(@PathVariable Long id) {
         return service.getById(id);
     }
-    
+
     @PatchMapping("/{id}")
     public IssueDto update(@PathVariable Long id, @Valid @RequestBody UpdateIssueRequest req) {
         return service.update(id, req);
@@ -63,6 +64,11 @@ public class IssueController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         service.delete(id);
+    }
+
+    @GetMapping("/stats/by-status")
+    public Map<IssueStatus, Long> getStatusStats() {
+        return service.getIssueCountsByStatus();
     }
 
 }

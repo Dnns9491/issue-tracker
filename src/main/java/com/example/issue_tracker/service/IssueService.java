@@ -19,6 +19,9 @@ import org.springframework.data.domain.Pageable;            // <- for paging
 import jakarta.persistence.EntityNotFoundException;         // <- if missing
 
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -162,6 +165,23 @@ public class IssueService {
         //Change status to IN_PROGRESS
         issue.setStatus(IssueStatus.DONE);
         return toDto(issue);
+    }
+
+    //Count issue by Status
+    @Transactional(readOnly = true)
+    public Map<IssueStatus, Long> getIssueCountsByStatus() {
+        // Get raw results from repository
+        List<Object[]> rawResults = issues.countByStatusRaw();
+
+        // Convert to Map
+        Map<IssueStatus, Long> statusCounts = new HashMap<>();
+        for (Object[] row : rawResults) {
+            IssueStatus status = (IssueStatus) row[0];
+            Long count = (Long) row[1];
+            statusCounts.put(status, count);
+        }
+
+        return statusCounts;
     }
 
 }
