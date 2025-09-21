@@ -118,4 +118,20 @@ public class IssueService {
         return toDto(issue);
     }
 
+    //Adding a method to get unassigned issues
+    @Transactional(readOnly = true)
+    public Page<IssueDto> getUnassigned(Pageable pageable) {
+        //Build a query: "WHERE assignee_id IS NULL"
+        Specification<Issue> spec = (root, query, cb) -> cb.isNull(root.get("assignee"));
+        //Execute the query with pagination
+        return issues.findAll(spec, pageable).map(this::toDto);
+    }
+
+    //Adding a method to get issues assigned to a user
+    @Transactional(readOnly = true)
+    public Page<IssueDto> getAssignedTo(Long userId, Pageable pageable) {
+        Specification<Issue> spec = (root, query, cb) -> cb.equal(root.get("assignee").get("id"), userId);
+        return issues.findAll(spec, pageable).map(this::toDto);
+    }
+
 }
