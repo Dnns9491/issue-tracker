@@ -4,10 +4,12 @@ import jakarta.persistence.*;
 
 import java.time.Instant;
 
-@Entity @Table (name = "projects")
+@Entity
+@Table(name = "projects")
 
 public class Project {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "`key`", nullable = false, unique = true, length = 16)
@@ -27,7 +29,8 @@ public class Project {
         this.name = name;
     }
 
-    @PrePersist void prePersist() {
+    @PrePersist
+    void prePersist() {
         if (createdAt == null)
             createdAt = Instant.now();
     }
